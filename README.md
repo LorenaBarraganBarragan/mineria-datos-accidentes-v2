@@ -1,113 +1,186 @@
 # Minería de Datos - Accidentes de Tránsito en Barranquilla
 
-## Descripción
+## 1. Descripción del proyecto
 
-Proyecto de minería de datos enfocado en el análisis de accidentes de tránsito en Barranquilla, integrando información de accidentalidad, precipitación y comparendos para realizar procesos de transformación, escalamiento y reducción de datos.
+Este proyecto desarrolla un proceso de minería de datos sobre los accidentes de tránsito registrados en Barranquilla, Colombia, integrando información de accidentalidad, precipitación y comparendos.
 
-## Objetivo
+El propósito es explorar el comportamiento de los accidentes, identificar patrones en los datos y analizar posibles relaciones entre la cantidad de accidentes, las condiciones de precipitación y los comparendos registrados.
 
-Analizar la relación entre los accidentes de tránsito, las condiciones de precipitación y los comparendos registrados en Barranquilla, aplicando técnicas de minería de datos para encontrar patrones y reducir la dimensionalidad de la información.
+El proyecto incluye la preparación, limpieza, integración, transformación y análisis exploratorio de los conjuntos de datos.
 
-## Datasets
+## 2. Objetivo general
 
-### 1. Accidentalidad en Barranquilla
+Analizar los datos de accidentalidad en Barranquilla mediante técnicas de minería de datos para describir su comportamiento y explorar relaciones entre los accidentes de tránsito, la precipitación y los comparendos.
 
-Dataset obtenido de Datos Abiertos Colombia.
+### Objetivos específicos
 
-Contiene **28.523 registros y 11 columnas**:
+- Explorar y describir los conjuntos de datos utilizados.
+- Identificar problemas de calidad, valores faltantes y posibles valores atípicos.
+- Limpiar e integrar los datos mediante la variable temporal.
+- Aplicar técnicas de transformación, escalamiento y reducción de dimensionalidad.
+- Analizar la distribución de las variables y sus relaciones mediante gráficos estadísticos.
+- Interpretar los resultados sin asumir relaciones causales que no estén demostradas.
 
-* `FECHA_ACCIDENTE`
-* `HORA_ACCIDENTE`
-* `GRAVEDAD_ACCIDENTE`
-* `CLASE_ACCIDENTE`
-* `SITIO_EXACTO_ACCIDENTE`
-* `CANT_HERIDOS_EN_SITIO_ACCIDENTE`
-* `CANT_MUERTOS_EN_SITIO_ACCIDENTE`
-* `CANTIDAD_ACCIDENTES`
-* `AÑO_ACCIDENTE`
-* `MES_ACCIDENTE`
-* `DIA_ACCIDENTE`
+## 3. Conjuntos de datos
 
-### 2. Precipitación
+### 3.1. Accidentalidad en Barranquilla
 
-Dataset obtenido de Datos Abiertos Colombia / IDEAM.
+- **Fuente:** Datos Abiertos Colombia.
+- **Formato:** CSV.
+- **Registros originales:** 28.523.
+- **Columnas originales:** 11.
 
-Contiene registros de precipitación para Barranquilla y variables relacionadas con las estaciones de medición, fecha, ubicación y unidad de medida.
+Principales variables:
 
-La variable principal utilizada es `valorobservado`, correspondiente a la precipitación registrada en milímetros.
+- `FECHA_ACCIDENTE`
+- `HORA_ACCIDENTE`
+- `GRAVEDAD_ACCIDENTE`
+- `CLASE_ACCIDENTE`
+- `SITIO_EXACTO_ACCIDENTE`
+- `CANT_HERIDOS_EN_SITIO_ACCIDENTE`
+- `CANT_MUERTOS_EN_SITIO_ACCIDENTE`
+- `CANTIDAD_ACCIDENTES`
+- `AÑO_ACCIDENTE`
+- `MES_ACCIDENTE`
+- `DIA_ACCIDENTE`
 
-### 3. Comparendos
+### 3.2. Precipitación en Barranquilla
 
-Dataset de comparendos de tránsito de Barranquilla.
+- **Fuente:** IDEAM / Datos Abiertos Colombia.
+- **Formato:** CSV.
+- **Registros originales reportados:** 50.000.
+- **Municipio de interés:** Barranquilla.
 
-Contiene **357.743 registros y 9 columnas**:
+La variable principal es `valorobservado`, que representa la precipitación registrada en milímetros (mm).
 
-* `fecha_comparendo`
-* `COD_INFRACCION`
-* `DESC_INFRACCION`
-* `TIPO_INFRACCION`
-* `SERVICIO_VEHICULO_INFRACTOR`
-* `CLASE_VEHICULO_INFRACTOR`
-* `CANTIDAD_INFRACCIONES`
-* `Tipo Camara`
-* `Camara_y_direccion`
+La información meteorológica se utiliza para explorar posibles relaciones entre las condiciones de precipitación y la accidentalidad. Los valores faltantes deben distinguirse de los registros que realmente representan ausencia de precipitación.
 
-## Integración de los datos
+### 3.3. Comparendos en Barranquilla
 
-Los tres datasets se procesan y relacionan mediante la fecha, obteniendo un único conjunto de datos:
+- **Formato:** CSV.
+- **Registros originales reportados:** 357.743.
+- **Columnas originales:** 9.
 
-`dataset/dataset_integrado.csv`
+Principales variables:
 
-El dataset integrado contiene **3047 registros y 11 variables** relacionadas con accidentes, gravedad, clase de accidente, precipitación, lluvia y comparendos.
+- `fecha_comparendo`
+- `COD_INFRACCION`
+- `DESC_INFRACCION`
+- `TIPO_INFRACCION`
+- `SERVICIO_VEHICULO_INFRACTOR`
+- `CLASE_VEHICULO_INFRACTOR`
+- `CANTIDAD_INFRACCIONES`
+- `Tipo Camara`
+- `Camara_y_direccion`
 
-## Transformación y reducción
+Los comparendos se utilizan para explorar su comportamiento y su posible asociación con la cantidad de accidentes registrados.
 
-El proceso se encuentra organizado en la clase:
+## 4. Preparación y transformación de los datos
 
-`src/transformacion.py`
+El proceso de preparación contempla las siguientes actividades:
 
-Se realizan:
+1. Carga e inspección de los conjuntos de datos originales.
+2. Limpieza y normalización de las variables.
+3. Conversión y organización de las fechas.
+4. Integración de la información de accidentalidad, precipitación y comparendos.
+5. Tratamiento de valores faltantes y creación de indicadores cuando corresponde.
+6. Codificación de variables categóricas.
+7. Escalamiento de variables numéricas.
+8. Aplicación de análisis de componentes principales (PCA) para reducir la dimensionalidad.
 
-* Tratamiento de valores nulos.
-* Codificación de variables categóricas.
-* Comparación entre diferentes métodos de escalamiento.
-* Escalamiento mediante `RobustScaler`.
-* Reducción de dimensionalidad mediante PCA.
+Los conjuntos de datos limpios, preparados, integrados y reducidos cumplen funciones diferentes dentro del proceso y deben utilizarse de acuerdo con la etapa del análisis.
 
-El proceso se documenta principalmente en:
+## 5. Análisis exploratorio de datos (EDA)
 
-`analisis/transformacion_escalabilidad.ipynb`
+El análisis exploratorio se desarrolla en el notebook `analisis/eda_accidentes_barranquilla.ipynb`, utilizando el conjunto de datos `dataset/dataset_limpio_eda.csv`.
 
-El análisis general del proyecto se encuentra en:
+El conjunto de datos utilizado en esta etapa contiene **3.047 registros y 12 columnas**.
 
-`analisis/analisis_datos.ipynb`
+La variable objetivo del análisis es `ACCIDENTES`, que representa la cantidad de accidentes en cada registro temporal.
 
-## PCA
+### 5.1. Análisis univariado
 
-Se seleccionaron **5 componentes principales**, conservando aproximadamente el **90,83 % de la varianza**.
+Se elaboraron gráficos para estudiar individualmente las variables numéricas y categóricas.
 
-El resultado se guarda en:
+**Histogramas**
 
-`dataset/dataset_reducido.csv`
+Se generaron histogramas para:
 
-El dataset reducido contiene **3047 registros y 7 columnas**:
+- `ACCIDENTES`
+- `PRECIPITACION_MM`
+- `COMPARENDOS`
 
-* `FECHA`
-* `PRECIPITACION_FALTANTE`
-* `PC1`
-* `PC2`
-* `PC3`
-* `PC4`
-* `PC5`
+Estos gráficos permiten examinar la distribución de los valores, sus concentraciones y la presencia de observaciones alejadas del comportamiento más frecuente.
 
-## Visualizaciones
+**Diagramas de caja (boxplots)**
 
-El proyecto incluye:
+Se elaboraron diagramas de caja para las mismas tres variables numéricas. Se utilizaron para examinar la mediana, los cuartiles, la dispersión y los posibles valores atípicos.
 
-* Varianza acumulada de los componentes principales.
-* Visualización de PC1 frente a PC2 para identificar patrones comportamentales.
+**Gráficos de barras**
 
-## Estructura del proyecto
+Se analizaron las frecuencias de las variables categóricas:
+
+- `GRAVEDAD_ACCIDENTE`
+- `CLASE_ACCIDENTE`
+- `LLUVIA`
+
+Cada gráfico cuenta con una interpretación dentro del notebook.
+
+### 5.2. Análisis bivariado
+
+Se generaron diagramas de dispersión para estudiar las siguientes relaciones:
+
+- `PRECIPITACION_MM` frente a `ACCIDENTES`.
+- `COMPARENDOS` frente a `ACCIDENTES`.
+
+Los gráficos incluyen una línea de tendencia lineal para facilitar la observación de las relaciones entre las variables.
+
+### 5.3. Matriz de correlación
+
+Se calculó el coeficiente de correlación de Pearson entre las tres variables numéricas.
+
+| Variables | Correlación |
+|---|---:|
+| Accidentes y precipitación | 0,063 |
+| Accidentes y comparendos | 0,134 |
+| Precipitación y comparendos | 0,018 |
+
+Los resultados indican asociaciones lineales positivas muy débiles entre accidentes y precipitación, y entre accidentes y comparendos. La relación lineal entre precipitación y comparendos es prácticamente nula.
+
+Estos coeficientes son descriptivos y no permiten establecer causalidad.
+
+### 5.4. Matriz de dispersión
+
+Se elaboró una matriz de dispersión (*pairplot*) para visualizar conjuntamente las distribuciones de las variables numéricas y sus relaciones por pares.
+
+Esta visualización complementa la matriz de correlación y permite observar la concentración de los valores, la dispersión y posibles patrones en los datos.
+
+### 5.5. Hallazgos descriptivos
+
+Entre los resultados del análisis exploratorio se destacan:
+
+- La cantidad promedio de accidentes es de aproximadamente 9,36 por registro, con una mediana de 8.
+- La precipitación presenta una alta concentración de valores en cero y algunos registros elevados.
+- La cantidad promedio de comparendos es de aproximadamente 208,90 por registro.
+- La clase de accidente más frecuente es el choque.
+- En la variable `LLUVIA` existe una proporción importante de registros clasificados como `Sin dato`, lo que limita las conclusiones sobre la presencia de lluvia.
+
+Los resultados describen el conjunto de datos analizado y no deben interpretarse como evidencia de causalidad.
+
+## 6. Tecnologías utilizadas
+
+- **Python:** desarrollo del proceso de análisis.
+- **Pandas:** carga, limpieza, transformación y manipulación de datos.
+- **Matplotlib:** construcción de visualizaciones.
+- **Seaborn:** gráficos estadísticos, diagramas de caja, dispersión y mapas de calor.
+- **Jupyter Notebook:** ejecución documentada del análisis.
+- **Visual Studio Code:** entorno de desarrollo.
+- **Git y GitHub:** control de versiones y almacenamiento del proyecto.
+- **Scikit-learn:** escalamiento y reducción de dimensionalidad mediante PCA, cuando corresponda a la etapa de transformación.
+
+## 7. Estructura del proyecto
+
+La estructura general del repositorio incluye los siguientes componentes. Los nombres de archivos pueden variar según los avances de cada etapa.
 
 ```text
 mineria-datos-accidentes-v2/
@@ -119,6 +192,7 @@ mineria-datos-accidentes-v2/
 │   ├── Accidentalidad_en_Barranquilla_limpio.csv
 │   ├── precipitacion_barranquilla_limpio.csv
 │   ├── Comparendos_Barranquilla_limpio.csv
+│   ├── dataset_limpio_eda.csv
 │   ├── dataset_integrado.csv
 │   └── dataset_reducido.csv
 │
@@ -128,15 +202,40 @@ mineria-datos-accidentes-v2/
 │   ├── precipitacion.py
 │   ├── comparendos.py
 │   ├── integracion.py
+│   ├── eda.py
 │   └── transformacion.py
 │
 ├── analisis/
 │   ├── analisis_datos.ipynb
+│   ├── eda_accidentes_barranquilla.ipynb
 │   └── transformacion_escalabilidad.ipynb
 │
 └── README.md
 ```
 
-## Resultado final
+## 8. Ejecución del análisis exploratorio
 
-El proyecto permite integrar tres fuentes de información y aplicar un proceso de **transformación, escalamiento y reducción de dimensionalidad**, obteniendo un dataset reducido que conserva aproximadamente el **90,83 % de la variabilidad de los datos**.
+1. Clonar o descargar el repositorio.
+2. Instalar Python y las dependencias necesarias.
+3. Abrir el proyecto en Visual Studio Code.
+4. Abrir el notebook `analisis/eda_accidentes_barranquilla.ipynb`.
+5. Verificar que la ruta del archivo `dataset/dataset_limpio_eda.csv` corresponda con la estructura local del proyecto.
+6. Seleccionar el kernel de Python y ejecutar las celdas en orden.
+
+El notebook documenta el análisis, las visualizaciones y las interpretaciones obtenidas a partir de los datos.
+
+## 9. Conclusiones generales
+
+El análisis exploratorio permite describir la distribución de los accidentes, la precipitación y los comparendos, así como identificar posibles valores atípicos y limitaciones en la calidad de la información.
+
+Las correlaciones calculadas son débiles, por lo que no se identifica una asociación lineal fuerte entre las variables numéricas analizadas. Además, la cantidad de registros clasificados como `Sin dato` en la variable de lluvia limita las comparaciones relacionadas con las condiciones meteorológicas.
+
+Estos resultados constituyen una base descriptiva para continuar con las etapas de transformación y reducción de dimensionalidad. Las conclusiones deben interpretarse teniendo en cuenta la calidad, la cobertura temporal y las características de los datos disponibles.
+
+## 10. Estado del proyecto
+
+El proyecto cuenta con conjuntos de datos originales y procesados, scripts de transformación y un notebook dedicado al análisis exploratorio de datos.
+
+Se han desarrollado visualizaciones univariadas y bivariadas, acompañadas de interpretaciones, y se calcularon correlaciones para examinar las relaciones entre las variables principales.
+
+Las siguientes actividades deben continuar según los requerimientos académicos y las etapas pendientes del proceso de minería de datos.
