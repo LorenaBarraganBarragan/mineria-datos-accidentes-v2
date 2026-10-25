@@ -194,7 +194,8 @@ mineria-datos-accidentes-v2/
 │   ├── Comparendos_Barranquilla_limpio.csv
 │   ├── dataset_limpio_eda.csv
 │   ├── dataset_integrado.csv
-│   └── dataset_reducido.csv
+│   ├── dataset_reducido.csv
+│   └── dataset_categorizado_arbol.csv
 │
 ├── src/
 │   ├── __init__.py
@@ -203,12 +204,19 @@ mineria-datos-accidentes-v2/
 │   ├── comparendos.py
 │   ├── integracion.py
 │   ├── eda.py
-│   └── transformacion.py
+│   ├── transformacion.py
+│   ├── preparador_arbol.py
+│   └── modelo_arbol_decision.py
 │
 ├── analisis/
 │   ├── analisis_datos.ipynb
 │   ├── eda_accidentes_barranquilla.ipynb
-│   └── transformacion_escalabilidad.ipynb
+│   ├── transformacion_escalabilidad.ipynb
+│   └── arbol_decision_accidentes.ipynb
+│
+├── docs/
+│   └── diagramas/
+│       └── arbol_decision_accidentes.png
 │
 └── README.md
 ```
@@ -239,3 +247,86 @@ El proyecto cuenta con conjuntos de datos originales y procesados, scripts de tr
 Se han desarrollado visualizaciones univariadas y bivariadas, acompañadas de interpretaciones, y se calcularon correlaciones para examinar las relaciones entre las variables principales.
 
 Las siguientes actividades deben continuar según los requerimientos académicos y las etapas pendientes del proceso de minería de datos.
+
+## 11. Árbol de decisión para la clasificación de accidentes
+
+Se desarrolló un modelo de clasificación mediante un árbol de decisión para identificar días con una cantidad baja o alta de accidentes de tránsito en Barranquilla.
+
+### 11.1. Objetivo del modelo
+
+Clasificar los registros diarios en dos categorías según la cantidad de accidentes:
+
+- **Clase 0 – Accidentes bajos:** 8 accidentes o menos.
+- **Clase 1 – Accidentes altos:** más de 8 accidentes.
+
+El umbral de 8 accidentes se estableció tomando como referencia la mediana obtenida en el análisis exploratorio de datos.
+
+El modelo no predice el número exacto de accidentes ni determina si habrá personas fallecidas.
+
+### 11.2. Variables utilizadas
+
+El modelo utiliza las siguientes variables predictoras:
+
+- `COMPARENDOS`: cantidad de comparendos registrados.
+- `CLASE_ACCIDENTE`: clase del accidente, representada mediante variables binarias.
+- `CLASE_VEHICULO_INFRACTOR`: clase del vehículo del infractor, representada mediante variables binarias.
+- `SERVICIO_VEHICULO_INFRACTOR`: servicio del vehículo, representado mediante variables binarias.
+
+Las variables categóricas se codificaron previamente en el conjunto de datos `dataset/dataset_categorizado_arbol.csv`.
+
+### 11.3. Preparación y entrenamiento
+
+La preparación de las variables se encuentra en `src/preparador_arbol.py` y el desarrollo del modelo se documenta en el notebook `analisis/arbol_decision_accidentes.ipynb`.
+
+Los datos se dividieron en dos conjuntos:
+
+| Conjunto | Registros | Porcentaje |
+|---|---:|---:|
+| Entrenamiento | 2.437 | 80 % |
+| Prueba | 610 | 20 % |
+| **Total** | **3.047** | **100 %** |
+
+Se utilizó `DecisionTreeClassifier` de Scikit-learn, con una profundidad máxima de cuatro niveles y `random_state=42` para mantener reproducible la división y el entrenamiento.
+
+### 11.4. Evaluación del modelo
+
+Los resultados obtenidos fueron los siguientes:
+
+| Métrica | Resultado |
+|---|---:|
+| Accuracy de entrenamiento | 57,49 % |
+| Accuracy de prueba | 61,31 % |
+| Registros de prueba clasificados correctamente | 374 de 610 |
+
+La matriz de confusión fue:
+
+| Resultado | Cantidad |
+|---|---:|
+| Verdaderos negativos | 219 |
+| Falsos positivos | 112 |
+| Falsos negativos | 124 |
+| Verdaderos positivos | 155 |
+
+El modelo clasificó correctamente 219 registros de accidentes bajos y 155 de accidentes altos. Sin embargo, clasificó incorrectamente 124 registros de accidentes altos como accidentes bajos.
+
+Estos resultados indican que el modelo presenta un rendimiento limitado y que debe mejorarse antes de utilizarse para apoyar decisiones operativas.
+
+### 11.5. Reglas de decisión
+
+Entre las reglas identificadas se encuentran:
+
+- Cuando la variable `CLASE_ACCIDENTE_Choque` es 0, el modelo clasifica el registro como accidentes bajos.
+- Cuando hay choques, los comparendos superan 95,5, el vehículo del infractor corresponde a un automóvil y los comparendos superan 217,5, el modelo clasifica el registro como accidentes altos.
+
+Estas reglas describen patrones identificados por el algoritmo y no demuestran relaciones causales.
+
+### 11.6. Diagramas generados
+
+Los diagramas del modelo se guardan en la carpeta `docs/diagramas/`:
+
+- `arbol_decision_accidentes.png`: visualización del árbol de decisión.
+- `matriz_confusion_accidentes.png`: matriz de confusión para evaluar las predicciones.
+
+### 11.7. Conclusión del modelo
+
+El árbol de decisión permite explorar cómo se relacionan las clases de accidentes, los comparendos y las características de los vehículos con la clasificación de la accidentalidad diaria. Su accuracy de prueba del 61,31 % muestra que todavía presenta dificultades para distinguir entre días de accidentalidad baja y alta. Por tanto, se pueden evaluar ajustes en las variables predictoras, la profundidad del árbol y otros parámetros para mejorar su desempeño.

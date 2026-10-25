@@ -192,9 +192,6 @@ class TransformacionDatos:
         self.df_reducido.to_csv(ruta, index=False)
         print(f"Dataset reducido guardado en: {ruta}")
         
-    def guardar_preparado(self, ruta):
-        self.df.to_csv(ruta, index=False)
-        print(f"Dataset limpio y categorizado guardado en: {ruta}")
         
     def guardar_dataset(self, ruta):
         """Guarda el dataset actual en un archivo CSV."""
